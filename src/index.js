@@ -17,7 +17,7 @@ const routes = {
   "ecr.qiuyuan.workers.dev": "https://public.ecr.aws",
 
   // staging
-  "docker-staging.libcuda.so": dockerHub,
+  "docker-staging.qiuyuan.workers.dev": dockerHub,
 };
 
 function routeByHosts(host) {
@@ -29,6 +29,10 @@ function routeByHosts(host) {
   }
   return "";
 }
+
+import DOCS from './help.html'
+ 
+
 
 async function handleRequest(request) {
   const url = new URL(request.url);
@@ -45,6 +49,15 @@ async function handleRequest(request) {
   }
   const isDockerHub = upstream == dockerHub;
   const authorization = request.headers.get("Authorization");
+  // return docs
+  if (url.pathname === "/") {
+    return new Response(DOCS, {
+      status: 200,
+      headers: {
+        "content-type": "text/html"
+      }
+    });
+  }
   if (url.pathname == "/v2/") {
     const newUrl = new URL(upstream + "/v2/");
     const headers = new Headers();
